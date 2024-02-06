@@ -17,7 +17,7 @@ Same as [ShellJector](https://github.com/Wolf49406/ShellJector) but works with l
 
 ## Arguments:
 You can set `ProcName` and `DDllName` with `-proc` and `-dll` arguments  
-(ex: `ShellJectorLocal.exe -proc explorer.exe -dll Payload.dll`)
+(ex: `ShellJectorLocal.exe -proc explorer.exe -dll Payload.dll`)  
 Arguments are case **sensitive**!
 
 ## Notice:
