@@ -23,7 +23,7 @@ static struct MemoryStruct LoadDll(std::filesystem::path DllPath) {
 }
 
 bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
-	printf("[DEBUG] Injecting...\n");
+	printf("Injecting...\n");
 
 	MemoryStruct Library = LoadDll(DllPath);
 	if (Library.size == 0)
@@ -46,7 +46,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 
 	pTargetBase = reinterpret_cast<BYTE*>(VirtualAllocEx(hProc, nullptr, pOldOptHeader->SizeOfImage, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 	if (!pTargetBase) {
-		printf("[-] VirtualAllocEx [1] Error: 0x%d\n", GetLastError());
+		printf("[-] VirtualAllocEx [1] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
@@ -64,7 +64,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 
 	if (!WriteProcessMemory(hProc, pTargetBase, pSrcData, 0x1000, nullptr)) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
-		printf("[-] WriteProcessMemory [1] Error: 0x%d\n", GetLastError());
+		printf("[-] WriteProcessMemory [1] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
@@ -73,7 +73,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 		if (pSectionHeader->SizeOfRawData) {
 			if (!WriteProcessMemory(hProc, pTargetBase + pSectionHeader->VirtualAddress, pSrcData + pSectionHeader->PointerToRawData, pSectionHeader->SizeOfRawData, nullptr)) {
 				VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
-				printf("[-] WriteProcessMemory [2] Error: 0x%d\n", GetLastError());
+				printf("[-] WriteProcessMemory [2] Error: 0x%X\n", GetLastError());
 				return false;
 			}
 		}
@@ -82,14 +82,14 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 	BYTE* MappingDataAlloc = reinterpret_cast<BYTE*>(VirtualAllocEx(hProc, nullptr, sizeof(MANUAL_MAPPING_DATA), MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE));
 	if (!MappingDataAlloc) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
-		printf("[-] VirtualAllocEx [2] Error: 0x%d\n", GetLastError());
+		printf("[-] VirtualAllocEx [2] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
 	if (!WriteProcessMemory(hProc, MappingDataAlloc, &data, sizeof(MANUAL_MAPPING_DATA), nullptr)) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, MappingDataAlloc, 0, MEM_RELEASE);
-		printf("[-] WriteProcessMemory [3] Error: 0x%d\n", GetLastError());
+		printf("[-] WriteProcessMemory [3] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
@@ -97,7 +97,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 	if (!pShellcode) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, MappingDataAlloc, 0, MEM_RELEASE);
-		printf("[-] VirtualAllocEx [3] Error: 0x%d\n", GetLastError());
+		printf("[-] VirtualAllocEx [3] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
@@ -105,7 +105,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, MappingDataAlloc, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, pShellcode, 0, MEM_RELEASE);
-		printf("[-] WriteProcessMemory [4] Error: 0x%d\n", GetLastError());
+		printf("[-] WriteProcessMemory [4] Error: 0x%X\n", GetLastError());
 		return false;
 	}
 
@@ -114,7 +114,7 @@ bool ManualMap(HANDLE hProc, std::filesystem::path DllPath) {
 		VirtualFreeEx(hProc, pTargetBase, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, MappingDataAlloc, 0, MEM_RELEASE);
 		VirtualFreeEx(hProc, pShellcode, 0, MEM_RELEASE);
-		printf("[-] CreateRemoteThread Error: 0x%d\n", GetLastError());
+		printf("[-] CreateRemoteThread Error: 0x%X\n", GetLastError());
 		return false;
 	}
 	CloseHandle(hThread);
