@@ -1,6 +1,8 @@
 # ShellJectorLocal
 Same as [ShellJector](https://github.com/Wolf49406/ShellJector) but works with local DLL
 
+[![MSBuild](https://github.com/Wolf49406/ShellJectorLocal/actions/workflows/msbuild.yml/badge.svg?branch=main)](https://github.com/Wolf49406/ShellJectorLocal/actions/workflows/msbuild.yml)
+
 ## How to Build:
 - Open `ShellJectorLocal.sln -> main.cpp`;
 - Set `ProcName` and `DllName`;
